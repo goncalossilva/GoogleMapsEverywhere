@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+        #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript">
+        document.write('<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=' + JavaScriptInterface.getApiKey() + '&sensor=false"><\/script>');
+    </script>
+    <script type="text/javascript">
+        function onInitialized() {
+          JavaScriptInterface.setInitialized();
+        }
+
+        google.maps.event.addDomListener(window, 'load', onInitialized);
+    </script>
+</head>
+    <body>
+        <script type="text/javascript">
+            document.write('<div id="' + JavaScriptInterface.getMapId() + '"></div>');
+        </script>
+    </body>
+</html>

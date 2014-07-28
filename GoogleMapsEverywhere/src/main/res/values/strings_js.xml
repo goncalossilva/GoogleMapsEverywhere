@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="map_create_js" translatable="false">
+        window.map =
+            new google.maps.Map(
+                document.getElementById(\"%1$s\"), {
+                    center: %2$s,
+                    zoom: %3$s,
+                    mapTypeControl: false,
+                    streetViewControl: false,
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.SMALL,
+                        position: google.maps.ControlPosition.RIGHT_BOTTOM
+                    }
+            });
+    </string>
+
+    <string name="map_setup_js" translatable="false">
+        window.objects = {};
+
+        google.maps.event.addListener(
+            window.map, \'tilesloaded\', function(event) { JavaScriptInterface.onMapLoaded(); });
+
+        google.maps.event.addListener(
+            window.map, \'click\', function(event) {
+                if (!longpress) {
+                    JavaScriptInterface.onMapClick(event.latLng.lat(), event.latLng.lng());
+                }
+            });
+        google.maps.event.addListener(
+            window.map, \'mousedown\', function(event) {
+                clickStartAt = new Date().getTime();
+                setTimeoutId = setTimeout(function() {
+                    JavaScriptInterface.onMapLongClick(event.latLng.lat(), event.latLng.lng());
+                }, %1$d);
+            });
+        google.maps.event.addListener(
+            window.map, \'mouseup\', function(event) {
+                longpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
+                clearTimeout(setTimeoutId);
+            });
+    </string>
+
+    <string name="show_my_location_enable_js" translatable="false">
+        window.objects[%1$d] =
+            new google.maps.Marker({
+                map: window.map,
+                icon: new google.maps.MarkerImage(
+                    \'mapfiles/mobile/mobileimgs2.png\',
+                    new google.maps.Size(22,22),
+                    new google.maps.Point(0,18),
+                    new google.maps.Point(11,11)),
+                zIndex: 999
+            });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                window.objects[%1$d].setPosition(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            });
+        }
+    </string>
+
+    <string name="show_my_location_disable_js" translatable="false">
+        window.objects[%1$d].setMap(null);
+        window.objects[%1$d] = null
+    </string>
+
+    <string name="mvcobject_update_js" translatable="false">
+        objects[%1$d].set(\"%2$s\", %3$s);
+    </string>
+
+    <string name="circle_create_js" translatable="false">
+        window.objects[%1$d] =
+            new google.maps.Circle({
+                map: window.map,
+                center: %2$s,
+                radius: %3$s,
+                fillColor: \"%4$s\",
+                strokeWeight: %5$s,
+                strokeColor: \"%6$s\",
+                clickable: false
+            });
+    </string>
+
+    <string name="circle_remove_js" translatable="false">
+        objects[%1$d].setMap(null);
+        objects[%1$d] = null;
+    </string>
+
+    <string name="marker_create_js" translatable="false">
+        window.objects[%1$d] =
+            new google.maps.Marker({
+                map: window.map,
+                position: %2$s
+            });
+    </string>
+
+    <string name="marker_remove_js" translatable="false">
+        objects[%1$d].setMap(null);
+        objects[%1$d] = null;
+    </string>
+
+    <string name="camera_update_lat_lng_zoom_js" translatable="false">
+        window.map.setCenter(%1$s);
+        window.map.setZoom(%2$s);
+    </string>
+
+    <string name="camera_update_lat_lng_bounds_js" translatable="false">
+        window.map.fitBounds(%1$s);
+    </string>
+
+    <string name="lat_lng_init_js" translatable="false">
+        new google.maps.LatLng(%1$s, %2$s)
+    </string>
+
+    <string name="lat_lng_bounds_init_js" translatable="false">
+        new google.maps.LatLngBounds(%1$s, %2$s)
+    </string>
+
+    <string name="color_css" translatable="false">
+        rgba(%1$d,%2$d,%3$d,%4$s)
+    </string>
+
+</resources>
