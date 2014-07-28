@@ -19,8 +19,11 @@
     <string name="map_setup_js" translatable="false">
         window.objects = {};
 
-        google.maps.event.addListener(
-            window.map, \'tilesloaded\', function(event) { JavaScriptInterface.onMapLoaded(); });
+        var tilesLoadedListener = google.maps.event.addListener(
+            window.map, \'tilesloaded\', function(event) {
+                google.maps.event.removeListener(tilesLoadedListener);
+                JavaScriptInterface.onMapLoaded();
+            });
 
         google.maps.event.addListener(
             window.map, \'click\', function(event) {
