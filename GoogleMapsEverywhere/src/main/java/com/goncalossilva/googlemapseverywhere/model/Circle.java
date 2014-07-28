@@ -44,6 +44,6 @@ public final class Circle {
     }
 
     public void setStrokeColor(int strokeColor) {
-        mCircleBridge.setCenter(strokeColor);
+        mCircleBridge.setStrokeColor(strokeColor);
     }
 }

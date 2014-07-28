@@ -77,7 +77,7 @@ class CircleBridge {
         mOptions.strokeWidth(strokeWidth);
     }
 
-    public void setCenter(int strokeColor) {
+    public void setStrokeColor(int strokeColor) {
         update("strokeColor", ColorUtils.getCss(mContext, strokeColor), true);
         mOptions.strokeColor(strokeColor);
     }
