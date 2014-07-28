@@ -1,10 +1,8 @@
 package com.goncalossilva.googlemapseverywhere.model;
 
 import com.goncalossilva.googlemapseverywhere.CameraUpdate;
+import com.goncalossilva.googlemapseverywhere.GoogleMap;
 import com.goncalossilva.googlemapseverywhere.GoogleMapOptions;
-import com.goncalossilva.googlemapseverywhere.OnMapClickListener;
-import com.goncalossilva.googlemapseverywhere.OnMapLoadedCallback;
-import com.goncalossilva.googlemapseverywhere.OnMapLongClickListener;
 import com.goncalossilva.googlemapseverywhere.R;
 import com.goncalossilva.googlemapseverywhere.util.LatLngUtils;
 
@@ -55,15 +53,15 @@ public final class GoogleMapBridge {
         }
     }
 
-    public void setOnMapLoadedCallback(OnMapLoadedCallback callback) {
+    public void setOnMapLoadedCallback(GoogleMap.OnMapLoadedCallback callback) {
         mJavaScriptBridge.setOnMapLoadedCallback(callback);
     }
 
-    public void setOnMapClickListener(OnMapClickListener listener) {
+    public void setOnMapClickListener(GoogleMap.OnMapClickListener listener) {
         mJavaScriptBridge.setOnMapClickListener(listener);
     }
 
-    public void setOnMapLongClickListener(OnMapLongClickListener listener) {
+    public void setOnMapLongClickListener(GoogleMap.OnMapLongClickListener listener) {
         mJavaScriptBridge.setOnMapLongClickListener(listener);
 
     }
