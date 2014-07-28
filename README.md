@@ -8,6 +8,14 @@ Internally, it's a wrapper around the Google Maps JavaScript API v3.
 
 For the most part, the API is the same as Google Maps Android API v2, so the documentation for it applies.
 
+The API key must be specified in your AndroidManifest.xml, like this:
+
+    <meta-data
+        android:name="com.google.android.maps.v3.API_KEY"
+        android:value="YOUR_API_KEY" />
+
+It should be a regular Google Maps JavaScript API v3.
+
 ## License
 
     Copyright (c) 2014 Gonçalo Silva
