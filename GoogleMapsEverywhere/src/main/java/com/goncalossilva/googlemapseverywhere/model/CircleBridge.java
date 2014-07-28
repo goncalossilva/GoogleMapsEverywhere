@@ -2,6 +2,7 @@ package com.goncalossilva.googlemapseverywhere.model;
 
 import com.goncalossilva.googlemapseverywhere.R;
 import com.goncalossilva.googlemapseverywhere.util.ColorUtils;
+import com.goncalossilva.googlemapseverywhere.util.DisplayUtils;
 import com.goncalossilva.googlemapseverywhere.util.LatLngUtils;
 
 import android.content.Context;
@@ -29,7 +30,7 @@ class CircleBridge {
                         LatLngUtils.getJs(mContext, mOptions.getCenter()),
                         mOptions.getRadius(),
                         ColorUtils.getCss(mContext, mOptions.getFillColor()),
-                        mOptions.getStrokeWidth(),
+                        DisplayUtils.pxToDp(mContext, mOptions.getStrokeWidth()),
                         ColorUtils.getCss(mContext, mOptions.getStrokeColor())));
     }
 
@@ -73,7 +74,7 @@ class CircleBridge {
     }
 
     public void setStrokeWidth(float strokeWidth) {
-        update("strokeWeight", strokeWidth, false);
+        update("strokeWeight", DisplayUtils.pxToDp(mContext, strokeWidth), false);
         mOptions.strokeWidth(strokeWidth);
     }
 
