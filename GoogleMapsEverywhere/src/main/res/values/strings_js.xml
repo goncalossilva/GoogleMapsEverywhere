@@ -76,8 +76,10 @@
                 center: %2$s,
                 radius: %3$s,
                 fillColor: \"%4$s\",
+                fillOpacity: 1.0,
                 strokeWeight: %5$s,
                 strokeColor: \"%6$s\",
+                strokeOpacity: 1.0,
                 clickable: false
             });
     </string>
