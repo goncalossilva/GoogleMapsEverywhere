@@ -11,8 +11,6 @@ import com.goncalossilva.googlemapseverywhere.model.MarkerOptions;
 import android.content.Context;
 
 public final class GoogleMap {
-    private Context mContext;
-
     private GoogleMapBridge mGoogleMapBridge;
 
     GoogleMap(Context context, JavaScriptBridge javaScriptBridge, String mapId, GoogleMapOptions options) {
