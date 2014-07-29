@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -21,49 +22,79 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MapView extends FrameLayout {
-    private static final GoogleMapOptions DEFAULT_MAP_OPTIONS =
-            new GoogleMapOptions()
-                    .camera(new CameraPosition.Builder().target(new LatLng(0f, 0f)).zoom(2)
-                            .build());
-
     private GoogleMapView mGoogleMapView;
+    private GoogleMapOptions mGoogleMapOptions;
 
     public MapView(Context context) {
         super(context);
-        addInnerView(context, DEFAULT_MAP_OPTIONS);
     }
 
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        addInnerView(context, DEFAULT_MAP_OPTIONS);
     }
 
     public MapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        addInnerView(context, DEFAULT_MAP_OPTIONS);
     }
 
     public MapView(Context context, GoogleMapOptions options) {
         super(context);
-        addInnerView(context, options);
+        mGoogleMapOptions = options;
     }
 
-    private void addInnerView(Context context, GoogleMapOptions options) {
-        mGoogleMapView = new GoogleMapView(context, options);
+    public void onCreate(Bundle savedInstanceState) {
+        mGoogleMapView = new GoogleMapView(getContext(), savedInstanceState, mGoogleMapOptions);
         addView(mGoogleMapView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
+    public void onStart() {
+        // Do nothing.
+    }
+
+    public void onResume() {
+        // Do nothing.
+    }
+
+    public void onLowMemory() {
+        // Do nothing.
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mGoogleMapView.onSaveInstanceState(outState);
+    }
+
+    public void onPause() {
+        // Do nothing.
+    }
+
+    public void onStop() {
+        // Do nothing.
+    }
+
+    public void onDestroy() {
+        removeView(mGoogleMapView);
+        mGoogleMapView.destroy();
+    }
+
     public GoogleMap getMap() {
-        return mGoogleMapView.getMap();
+        return mGoogleMapView != null ? mGoogleMapView.getMap() : null;
     }
 
     private static class GoogleMapView extends WebView {
+        private static final String ID_MAP = "map-canvas";
 
-        private static final String MAP_ID = "map-canvas";
+        private static final String KEY_CENTER = ":google_map_view_center";
+        private static final String KEY_ZOOM = ":google_map_view_zoom";
+
+        private static final LatLng DEFAULT_CENTER = new LatLng(0f, 0f);
+        private static final float DEFAULT_ZOOM = 2;
 
         private GoogleMap mGoogleMap;
 
-        public GoogleMapView(Context context, GoogleMapOptions options) {
+        private LatLng mCenter;
+        private float mZoom;
+
+        public GoogleMapView(Context context, Bundle savedInstanceState, GoogleMapOptions options) {
             super(context);
 
             WebSettings settings = getSettings();
@@ -101,12 +132,34 @@ public class MapView extends FrameLayout {
             // Load the HTML.
             loadUrl("file:///android_asset/base_map.html");
 
+            // Set options, center, and zoom. If options are specified, center / zoom fetch from it. If not, options
+            // are created based on center / zoom which in turn depend on the savedInstanceState.
+            if (options != null) {
+                mCenter = options.getCamera().target;
+                mZoom = options.getCamera().zoom;
+            } else {
+                if (savedInstanceState != null) {
+                    mCenter = savedInstanceState.getParcelable(KEY_CENTER);
+                    mZoom = savedInstanceState.getFloat(KEY_ZOOM);
+                } else {
+                    mCenter = DEFAULT_CENTER;
+                    mZoom = DEFAULT_ZOOM;
+                }
+                options =
+                        new GoogleMapOptions().camera(new CameraPosition.Builder().target(mCenter).zoom(mZoom).build());
+            }
+
             // Create GoogleMap object.
-            mGoogleMap = new GoogleMap(context.getApplicationContext(), javaScriptInterface, MAP_ID, options);
+            mGoogleMap = new GoogleMap(context.getApplicationContext(), javaScriptInterface, ID_MAP, options);
         }
 
         public GoogleMap getMap() {
             return mGoogleMap;
+        }
+
+        private void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(KEY_CENTER, mCenter);
+            outState.putFloat(KEY_ZOOM, mZoom);
         }
 
         private class JavaScriptInterface implements JavaScriptBridge {
@@ -134,7 +187,7 @@ public class MapView extends FrameLayout {
 
             @JavascriptInterface
             public String getMapId() {
-                return MAP_ID;
+                return ID_MAP;
             }
 
             @JavascriptInterface
@@ -204,6 +257,12 @@ public class MapView extends FrameLayout {
                         }
                     }
                 });
+            }
+
+            @JavascriptInterface
+            public void setCenterZoom(double latitude, double longitude, float zoom) {
+                mCenter = new LatLng(latitude, longitude);
+                mZoom = zoom;
             }
 
             @Override

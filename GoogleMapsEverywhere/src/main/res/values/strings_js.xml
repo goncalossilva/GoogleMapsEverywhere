@@ -17,14 +17,16 @@
     </string>
 
     <string name="map_setup_js" translatable="false">
+        /* Create object dictionary. */
         window.objects = {};
 
-        var tilesLoadedListener = google.maps.event.addListener(
+        /* Set listener for when the map is loaded. */
+        var tilesLoadedListener = google.maps.event.addListenerOnce(
             window.map, \'tilesloaded\', function(event) {
-                google.maps.event.removeListener(tilesLoadedListener);
                 JavaScriptInterface.onMapLoaded();
             });
 
+        /* Set listeners to detect clicks and long clicks.
         google.maps.event.addListener(
             window.map, \'click\', function(event) {
                 if (!longpress) {
@@ -40,9 +42,19 @@
             });
         google.maps.event.addListener(
             window.map, \'mouseup\', function(event) {
-                longpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
+                var longpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
                 clearTimeout(setTimeoutId);
             });
+
+        /* Set listeners to detect center / zoom changes. */
+        function setCenterZoom() {
+            JavaScriptInterface.setCenterZoom(
+                window.map.getCenter().lat(),
+                window.map.getCenter().lng(),
+                window.map.getZoom());
+        };
+        google.maps.event.addListener(window.map, \'center_changed\', setCenterZoom);
+        google.maps.event.addListener(window.map, \'zoom_changed\', setCenterZoom);
     </string>
 
     <string name="show_my_location_enable_js" translatable="false">
