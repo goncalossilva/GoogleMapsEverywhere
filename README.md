@@ -16,6 +16,8 @@ The API key must be specified in your AndroidManifest.xml, like this:
 
 It should be a regular Google Maps JavaScript API v3.
 
+Unlike Google Maps on Android, GoogleMapsEverywhere doesn't need any special permission to run besides the `android.permission.INTERNET` permission, which is required by its own `AndroidManifest.xml`. However, if you use `GoogleMap#setMyLocationEnabled(true)` you'll need to declare the `android.permission.ACCESS_FINE_LOCATION` permission in your `AndroidManifest.xml` file.
+
 ## License
 
     Copyright (c) 2014 Gonçalo Silva
