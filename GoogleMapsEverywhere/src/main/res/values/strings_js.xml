@@ -17,19 +17,18 @@
     </string>
 
     <string name="map_setup_js" translatable="false">
-        /* Create object dictionary. */
         window.objects = {};
 
-        /* Set listener for when the map is loaded. */
         var tilesLoadedListener = google.maps.event.addListenerOnce(
             window.map, \'tilesloaded\', function(event) {
                 JavaScriptInterface.onMapLoaded();
             });
 
-        /* Set listeners to detect clicks and long clicks.
+        var clickStartAt;
+        var isLongpress;
         google.maps.event.addListener(
             window.map, \'click\', function(event) {
-                if (!longpress) {
+                if (!isLongpress) {
                     JavaScriptInterface.onMapClick(event.latLng.lat(), event.latLng.lng());
                 }
             });
@@ -42,11 +41,10 @@
             });
         google.maps.event.addListener(
             window.map, \'mouseup\', function(event) {
-                var longpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
+                isLongpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
                 clearTimeout(setTimeoutId);
             });
 
-        /* Set listeners to detect center / zoom changes. */
         function setCenterZoom() {
             JavaScriptInterface.setCenterZoom(
                 window.map.getCenter().lat(),
@@ -81,7 +79,7 @@
     </string>
 
     <string name="mvcobject_update_js" translatable="false">
-        objects[%1$d].set(\"%2$s\", %3$s);
+        window.objects[%1$d].set(\"%2$s\", %3$s);
     </string>
 
     <string name="circle_create_js" translatable="false">
@@ -100,8 +98,8 @@
     </string>
 
     <string name="circle_remove_js" translatable="false">
-        objects[%1$d].setMap(null);
-        objects[%1$d] = null;
+        window.objects[%1$d].setMap(null);
+        window.objects[%1$d] = null;
     </string>
 
     <string name="marker_create_js" translatable="false">
@@ -113,8 +111,8 @@
     </string>
 
     <string name="marker_remove_js" translatable="false">
-        objects[%1$d].setMap(null);
-        objects[%1$d] = null;
+        window.objects[%1$d].setMap(null);
+        window.objects[%1$d] = null;
     </string>
 
     <string name="camera_update_lat_lng_zoom_js" translatable="false">
