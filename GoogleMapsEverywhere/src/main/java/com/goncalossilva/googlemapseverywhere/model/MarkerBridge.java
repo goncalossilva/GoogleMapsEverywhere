@@ -23,7 +23,8 @@ class MarkerBridge {
     public void add() {
         mJavaScriptBridge.evaluateJavascript(
                 mContext.getString(
-                        R.string.marker_create_js, mIndex, LatLngUtils.getJs(mContext, mOptions.getPosition())));
+                        R.string.marker_create_js, mIndex,
+                        LatLngUtils.getJs(mContext, mOptions.getPosition())));
     }
 
     public void remove() {
