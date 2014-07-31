@@ -89,10 +89,12 @@ public class MapView extends FrameLayout {
         private static final LatLng DEFAULT_CENTER = new LatLng(0f, 0f);
         private static final float DEFAULT_ZOOM = 2;
 
-        private GoogleMap mGoogleMap;
-
         private LatLng mCenter;
         private float mZoom;
+
+        private JavaScriptInterface mJavaScriptInterface;
+
+        private GoogleMap mGoogleMap;
 
         public GoogleMapView(Context context, Bundle savedInstanceState, GoogleMapOptions options) {
             super(context);
@@ -126,11 +128,8 @@ public class MapView extends FrameLayout {
             }
 
             // Bind JavaScript interface.
-            JavaScriptInterface javaScriptInterface = new JavaScriptInterface(apiKey);
-            addJavascriptInterface(javaScriptInterface, "JavaScriptInterface");
-
-            // Load the HTML.
-            loadUrl("file:///android_asset/base_map.html");
+            mJavaScriptInterface = new JavaScriptInterface(apiKey);
+            addJavascriptInterface(mJavaScriptInterface, "JavaScriptInterface");
 
             // Set options, center, and zoom. If options are specified, center / zoom fetch from it. If not, options
             // are created based on center / zoom which in turn depend on the savedInstanceState.
@@ -150,7 +149,22 @@ public class MapView extends FrameLayout {
             }
 
             // Create GoogleMap object.
-            mGoogleMap = new GoogleMap(context.getApplicationContext(), javaScriptInterface, ID_MAP, options);
+            mGoogleMap = new GoogleMap(context.getApplicationContext(), mJavaScriptInterface, ID_MAP, options);
+        }
+
+        @Override
+        protected void onSizeChanged(int w, int h, int ow, int oh) {
+            super.onSizeChanged(w, h, ow, oh);
+
+
+            if(w != 0 && h != 0 && ow == 0 && oh == 0)  {
+                // Load the URL.
+                loadUrl("file:///android_asset/base_map.html");
+            }
+            else {
+                // Notify map about the resize.
+                mJavaScriptInterface.evaluateJavascript(getContext().getString(R.string.map_trigger_resize));
+            }
         }
 
         public GoogleMap getMap() {
@@ -163,7 +177,6 @@ public class MapView extends FrameLayout {
         }
 
         private class JavaScriptInterface implements JavaScriptBridge {
-
             private String mApiKey;
 
             private boolean mInitialized = false;
@@ -171,9 +184,7 @@ public class MapView extends FrameLayout {
             private List<String> mPendingScripts = new ArrayList<>();
 
             private GoogleMap.OnMapLoadedCallback mOnMapLoadedCallback;
-
             private GoogleMap.OnMapClickListener mOnMapClickListener;
-
             private GoogleMap.OnMapLongClickListener mOnMapLongClickListener;
 
             public JavaScriptInterface(String apiKey) {

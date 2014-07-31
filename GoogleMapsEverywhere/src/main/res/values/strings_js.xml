@@ -7,6 +7,8 @@
                 document.getElementById(\"%1$s\"), {
                     center: %2$s,
                     zoom: %3$s,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    keyboardShortcuts: false,
                     mapTypeControl: false,
                     streetViewControl: false,
                     zoomControlOptions: {
@@ -19,30 +21,32 @@
     <string name="map_setup_js" translatable="false">
         window.objects = {};
 
-        var tilesLoadedListener = google.maps.event.addListenerOnce(
+        google.maps.event.addListenerOnce(
             window.map, \'tilesloaded\', function(event) {
                 JavaScriptInterface.onMapLoaded();
             });
 
-        var clickStartAt;
-        var isLongpress;
-        google.maps.event.addListener(
-            window.map, \'click\', function(event) {
-                if (!isLongpress) {
-                    JavaScriptInterface.onMapClick(event.latLng.lat(), event.latLng.lng());
-                }
-            });
         google.maps.event.addListener(
             window.map, \'mousedown\', function(event) {
                 clickStartAt = new Date().getTime();
-                setTimeoutId = setTimeout(function() {
-                    JavaScriptInterface.onMapLongClick(event.latLng.lat(), event.latLng.lng());
+                isClick = true;
+                longPressTimeoutId = setTimeout(function() {
+                    if (isClick)
+                        JavaScriptInterface.onMapLongClick(event.latLng.lat(), event.latLng.lng());
                 }, %1$d);
             });
         google.maps.event.addListener(
             window.map, \'mouseup\', function(event) {
-                isLongpress = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
-                clearTimeout(setTimeoutId);
+                isLongClick = (new Date().getTime() - clickStartAt &lt; %1$d) ? false : true;
+                if (isClick &amp;&amp; !isLongClick) {
+                    JavaScriptInterface.onMapClick(event.latLng.lat(), event.latLng.lng());
+                }
+                clearTimeout(longPressTimeoutId);
+            });
+        google.maps.event.addListener(
+            window.map, \'mousemove\', function(event) {
+                isClick = false;
+                clearTimeout(longPressTimeoutId);
             });
 
         function setCenterZoom() {
@@ -53,6 +57,10 @@
         };
         google.maps.event.addListener(window.map, \'center_changed\', setCenterZoom);
         google.maps.event.addListener(window.map, \'zoom_changed\', setCenterZoom);
+    </string>
+
+    <string name="map_trigger_resize" translatable="false">
+        google.maps.event.trigger(window.map, \'resize\');
     </string>
 
     <string name="show_my_location_enable_js" translatable="false">
