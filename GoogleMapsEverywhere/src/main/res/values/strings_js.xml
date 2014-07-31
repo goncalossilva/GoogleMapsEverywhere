@@ -63,6 +63,11 @@
         google.maps.event.trigger(window.map, \'resize\');
     </string>
 
+    <string name="refresh_on_oldroids_hack">
+        window.map.setZoom(window.map.getZoom() - 1);
+        window.map.setZoom(window.map.getZoom() + 1);
+    </string>
+
     <string name="show_my_location_enable_js" translatable="false">
         window.objects[%1$d] =
             new google.maps.Marker({

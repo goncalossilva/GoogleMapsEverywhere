@@ -228,6 +228,7 @@ public class MapView extends FrameLayout {
                         GoogleMapView.this.evaluateJavascript(script, null);
                     } else {
                         loadUrl("javascript:" + script);
+                        loadUrl("javascript:" + getContext().getString(R.string.refresh_on_oldroids_hack));
                     }
                 } else {
                     mPendingScripts.add(script);
