@@ -63,7 +63,6 @@ public final class GoogleMapBridge {
 
     public void setOnMapLongClickListener(GoogleMap.OnMapLongClickListener listener) {
         mJavaScriptBridge.setOnMapLongClickListener(listener);
-
     }
 
     public void moveCamera(CameraUpdate update) {
