@@ -22,7 +22,7 @@ Finally, add this to your proguard configuration:
 
     -keepattributes JavaScriptInterface
     -keepclassmembers class * {
-        @JavascriptInterface <methods>;
+        @android.webkit.JavascriptInterface <methods>;
     }
 
 ## License
